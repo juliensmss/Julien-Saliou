@@ -79,26 +79,32 @@ export default function ProjectDetailsModal({ project, onClose, isDarkMode = fal
             {/* Content Area */}
             <div className="max-h-[60vh] overflow-y-auto p-6 sm:p-8 space-y-6" id="modal-scrollable">
               {/* Project Metadata grid */}
-              <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 border-b ${mBorderMuted} pb-6 text-sm ${mTextSubtle}`}>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <div>
-                    <p className="text-xs text-neutral-500">Durée</p>
-                    <p className={`font-semibold ${isDarkMode ? "text-neutral-200" : "text-neutral-800"}`}>{project.duration}</p>
+              <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 border-b ${mBorderMuted} pb-6 text-sm ${mTextSubtle}`}>
+                <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${mBorderMuted} ${isDarkMode ? "bg-neutral-900/60" : "bg-slate-50/80"} min-w-0`}>
+                  <Calendar className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Durée</p>
+                    <p className={`font-semibold text-xs sm:text-sm ${isDarkMode ? "text-neutral-200" : "text-neutral-800"} break-words`}>
+                      {project.duration}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <div>
-                    <p className="text-xs text-neutral-500">Lieu de Mission</p>
-                    <p className={`font-semibold ${isDarkMode ? "text-neutral-200" : "text-neutral-800"} truncate`}>{project.location}</p>
+
+                <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${mBorderMuted} ${isDarkMode ? "bg-neutral-900/60" : "bg-slate-50/80"} min-w-0`}>
+                  <MapPin className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Lieu de Mission</p>
+                    <p className={`font-semibold text-xs sm:text-sm ${isDarkMode ? "text-neutral-200" : "text-neutral-800"} break-words leading-snug`}>
+                      {project.location}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 col-span-2 md:col-span-1">
-                  <Info className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <div>
-                    <p className="text-xs text-neutral-500">Secteur Cible</p>
-                    <p className={`font-semibold ${isDarkMode ? "text-neutral-200" : "text-neutral-800"} capitalize`}>
+
+                <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${mBorderMuted} ${isDarkMode ? "bg-neutral-900/60" : "bg-slate-50/80"} min-w-0`}>
+                  <Info className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Secteur Cible</p>
+                    <p className={`font-semibold text-xs sm:text-sm ${isDarkMode ? "text-neutral-200" : "text-neutral-800"} break-words leading-snug`}>
                       {project.category === "critical"
                         ? "Milieu Critique / Sûreté"
                         : project.category === "energy"

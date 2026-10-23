@@ -48,7 +48,7 @@ import SmeIso50001Module from "./tools/SmeIso50001Module";
 
 export default function ToolsSimulators() {
   const [universe, setUniverse] = useState<"b2c" | "b2b" | null>(null);
-  const [b2cView, setB2cView] = useState<"autonomy" | "junivers">("autonomy");
+  const [b2cView, setB2cView] = useState<"autonomy" | "junivers" | null>(null);
   const [autonomyTool, setAutonomyTool] = useState<"scan-focus-act" | "water" | "solar">("scan-focus-act");
 
   // -------------------------------------------------------------
@@ -371,7 +371,10 @@ export default function ToolsSimulators() {
               {/* Particulier (B2C) - Right */}
               <button
                 type="button"
-                onClick={() => setUniverse("b2c")}
+                onClick={() => {
+                  setUniverse("b2c");
+                  setB2cView(null);
+                }}
                 className="p-6 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all group flex flex-col justify-between shadow-sm hover:shadow-md cursor-pointer"
               >
                 <div>
@@ -429,7 +432,10 @@ export default function ToolsSimulators() {
 
             <button
               type="button"
-              onClick={() => setUniverse(null)}
+              onClick={() => {
+                setUniverse(null);
+                setB2cView(null);
+              }}
               className="self-start sm:self-auto flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition cursor-pointer"
             >
               <span>Changer de profil</span>
@@ -444,33 +450,122 @@ export default function ToolsSimulators() {
         {universe === "b2c" && (
           <div className="space-y-6">
             {/* B2C Sub-Tabs Switcher */}
-            <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-              <button
-                type="button"
-                onClick={() => setB2cView("junivers")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition ${
-                  b2cView === "junivers"
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <Brain className="w-4 h-4" />
-                <span>Junivers (Introspection IA)</span>
-              </button>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                {/* 1. Simulateurs d'Autonomie (Eau & Solaire / H₂) à GAUCHE */}
+                <button
+                  type="button"
+                  onClick={() => setB2cView("autonomy")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition cursor-pointer ${
+                    b2cView === "autonomy"
+                      ? "bg-emerald-600 text-white shadow-sm"
+                      : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-emerald-300"
+                  }`}
+                >
+                  <Workflow className="w-4 h-4" />
+                  <span>Simulateurs d'Autonomie (Eau & Solaire / H₂)</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setB2cView("autonomy")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition ${
-                  b2cView === "autonomy"
-                    ? "bg-emerald-600 text-white shadow-sm"
-                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <Workflow className="w-4 h-4" />
-                <span>Simulateurs d'Autonomie (Eau & Solaire / H₂)</span>
-              </button>
+                {/* 2. Junivers (Introspection IA) à DROITE */}
+                <button
+                  type="button"
+                  onClick={() => setB2cView("junivers")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition cursor-pointer ${
+                    b2cView === "junivers"
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-indigo-300"
+                  }`}
+                >
+                  <Brain className="w-4 h-4" />
+                  <span>Junivers (Introspection IA)</span>
+                </button>
+              </div>
+
+              {b2cView !== null && (
+                <button
+                  type="button"
+                  onClick={() => setB2cView(null)}
+                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Fermer la vue</span>
+                  <span className="text-slate-400">✕</span>
+                </button>
+              )}
             </div>
+
+            {/* Vue initiale : aucun outil sélectionné -> cartes de sélection */}
+            {b2cView === null && (
+              <div className="py-6 space-y-6">
+                <div className="text-center max-w-xl mx-auto space-y-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Sélectionnez un outil pour ouvrir la page
+                  </h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Cliquez sur l'un des deux espaces ci-dessous pour lancer l'application interactive correspondante.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+                  {/* Carte 1 : Simulateurs d'Autonomie à GAUCHE */}
+                  <div
+                    onClick={() => setB2cView("autonomy")}
+                    className="p-6 rounded-2xl bg-white border-2 border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-emerald-100 text-emerald-800 group-hover:bg-emerald-600 group-hover:text-white transition">
+                          <Workflow className="w-6 h-6" />
+                        </div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                          Autonomie & Résilience
+                        </span>
+                      </div>
+
+                      <h4 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition">
+                        Simulateurs d'Autonomie (Eau & Solaire / H₂)
+                      </h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Démarche séquentielle <strong>SCAN – FOCUS – ACT</strong>, calculateurs de dimensionnement hydrique (réseau double eau de pluie), énergie solaire et résilience domestique.
+                      </p>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-600 group-hover:text-emerald-700">
+                      <span>Ouvrir les simulateurs</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+
+                  {/* Carte 2 : Junivers (Introspection IA) à DROITE */}
+                  <div
+                    onClick={() => setB2cView("junivers")}
+                    className="p-6 rounded-2xl bg-white border-2 border-slate-200 hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-indigo-100 text-indigo-800 group-hover:bg-indigo-600 group-hover:text-white transition">
+                          <Brain className="w-6 h-6" />
+                        </div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                          IA Générative & Psychologie
+                        </span>
+                      </div>
+
+                      <h4 className="text-base font-bold text-slate-900 group-hover:text-indigo-700 transition">
+                        Junivers (Introspection IA)
+                      </h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Cahier des charges complet et démonstrateur interactif d'un « miroir interprétatif » croisant 9 modèles psychologiques (MBTI, Ennéagramme, Big Five...) via l'IAGen.
+                      </p>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600 group-hover:text-indigo-700">
+                      <span>Découvrir Junivers</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* B2C VIEW 1: JUNIVERS */}
             {b2cView === "junivers" && <JuniversModule />}
