@@ -56,10 +56,8 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
             className="flex items-center gap-2.5 cursor-pointer group shrink-0"
             title="Julien Saliou - Portfolio"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 via-sky-600 to-indigo-600 p-0.5 shadow-md group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
-                <span className="font-mono font-black text-xs sm:text-sm text-emerald-400 tracking-wider">JS</span>
-              </div>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 via-sky-600 to-indigo-600 p-0.5 shadow-md group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="/favicon.svg" alt="Julien Saliou Logo" className="w-full h-full rounded-[6px] object-contain bg-slate-950 p-0.5" />
             </div>
             <div>
               <span className="font-extrabold text-base tracking-wider font-mono text-white group-hover:text-emerald-400 transition-colors">
