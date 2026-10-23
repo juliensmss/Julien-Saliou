@@ -79,10 +79,10 @@ ${message}`;
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <h2 className="text-xl font-bold text-slate-900">
-                Message préparé avec succès !
+                Message envoyé avec succès !
               </h2>
               <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                Merci {prenom} {nom}. Votre messagerie s'ouvre avec votre message pré-rempli adressé à <strong>{contactDestination}</strong>.
+                Merci {prenom} {nom}. Votre message a bien été transmis. Je reviens vers vous dans les plus brefs délais.
               </p>
               <div className="pt-3 flex items-center justify-center gap-3">
                 <button
@@ -91,7 +91,7 @@ ${message}`;
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  <span>Rédiger un autre message</span>
+                  <span>Envoyer un autre message</span>
                 </button>
               </div>
             </div>
