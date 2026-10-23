@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Notion Dark Custom styling */
+body {
+  background-color: #191919;
+  color: #e3e3e3;
+  font-family: var(--font-sans);
+}
+
+/* Custom Notion scrollbar to make it look extremely realistic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #191919;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #373737;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #474747;
+}
+
+/* Selection highlight colors matching Notion */
+::selection {
+  background-color: #2e4d3c;
+  color: #ffffff;
+}
