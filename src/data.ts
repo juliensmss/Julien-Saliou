@@ -17,7 +17,7 @@ export const PROJECTS: Project[] = [
     id: "exxonmobil",
     title: "Maintenannce & Optimisation de Production",
     client: "ExxonMobil",
-    duration: "6 mois",
+    duration: "4 ans",
     location: "Plateforme Port Jerome (France/Normandie)",
     category: "energy",
     image: "/exxonMobil.jpg",
@@ -44,7 +44,7 @@ export const PROJECTS: Project[] = [
     id: "edf",
     title: "Maintenance Automatisme & Sûreté Nucléaire",
     client: "EDF (CNPE de Paluel)",
-    duration: "5 ans et 2 mois",
+    duration: "5 ans & 1/2",
     location: "CNPE Paluel (France/Normandie)",
     category: "energy",
     image: "/edf.png",
@@ -71,7 +71,7 @@ export const PROJECTS: Project[] = [
     id: "lgcf",
     title: "Système EMS (IoT & Supervision Digitale)",
     client: "Les Grands Chais de France (LGCF)",
-    duration: "1 an",
+    duration: "2 ans",
     location: "Bordeaux & 14 sites de production (France/Aquitaine)",
     category: "energy",
     image: "/LGCF.jpg",
@@ -194,7 +194,7 @@ export const PROJECTS: Project[] = [
     id: "log-brewery",
     title: "Projets Lean & Lean Six Sigma",
     client: "Brasserie B&B & Usine Aéronautique",
-    duration: "3 semaines / 4 mois",
+    duration: "1 mois / 4 mois",
     location: "France (Plateforme logistique & Lyon)",
     category: "lean",
     image: "/log-brewery.jpg",
@@ -221,33 +221,6 @@ export const PROJECTS: Project[] = [
         "2 [Six Sigma] Élimination des variables non-influentes : Validation statistique de l'absence d'impact significatif des paramètres de coupe (vitesse et rotation) et du pointage sur la qualité du perçage.",
         "2 [Six Sigma] Optimisation du procédé : Recommandation stratégique d'écarter les anciens affûtages et de modifier les méthodes de bridage (privilégier le bridage 4 au détriment du bridage 1) pour gagner en répétabilité.",
         "2 [Six Sigma] Aide à la décision : Fourniture d'un plan d'action concret pour réduire les non-conformités et stabiliser le centrage de la production vers la valeur cible."
-      ]
-    }
-  },
-  {
-    id: "junivers",
-    title: "A.I. Personal Development (Junivers)",
-    client: "Junivers (Projet Personnel Innovant)",
-    duration: "4 mois",
-    location: "Lyon (France)",
-    category: "ia",
-    image: "/junivers.jpg",
-    summary: "Conception d'un product-cahier des charges de développement personnel croisant 9 tests de psychologie cognitive via l'IAGen.",
-    presentation: "Junivers est né d’un constat de terrain lors d’une phase de transition professionnelle. J’ai conçu un parcours capable de croiser les données de plus de 8 tests reconnus (sciences humaines et sociologie) pour produire une synthèse unique et nuancée, transformant des données brutes en un véritable récit fluide.",
-    methodology: [
-      "Idéation & Valuation : Conception de la proposition de valeur exclusive ('miroir interprétatif' croisé par IA générative).",
-      "Recherche scientifique : Audit de 15 questionnaires pour retenir 9 piliers théoriques robustes.",
-      "Propriété Intellectuelle : Adaptation exclusive de formulations pour garantir le respect rigoureux des frameworks protégés.",
-      "Analyse des Risques (AMDEC) : Traitement des points de sécurité critiques : conformité RGPD (tests psychologiques), hébergement, pseudonymisation, gestion d'hallucinations d'IA.",
-      "Modélisation business & financière : Business plan complet établissant le point d'équilibre financier.",
-      "Architecture techniques & Prompting : Conception des règles de prompts et orchestration de workflows via n8n et GenAI."
-    ],
-    results: {
-      kpis: ["Rapports Narratifs 30 pages", "10 Bêta-Testeurs Convaincus", "Architecture n8n / IA"],
-      details: [
-        "Mise au point d'un prototype fonctionnel complet, testé par 10 utilisateurs renvoyant d'excellents retours d'introspection.",
-        "Rédaction d'un Cahier des Charges approfondi, structurant l'expérience interface et technique pour intégration définitive.",
-        "Élimination complète des risques de fuite de données personnelles par anonymisation stricte."
       ]
     }
   }

@@ -10,12 +10,25 @@ import {
   Building2
 } from "lucide-react";
 
+export const PREDEFINED_OBJECTS = [
+  "Performance Industrielle",
+  "Transformation Digitale",
+  "Création de solution web saas",
+  "Junivers",
+  "Autonomie",
+  "Autres"
+] as const;
+
+export type PredefinedObject = typeof PREDEFINED_OBJECTS[number];
+
 export default function ContactInvitations() {
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
   const [entreprise, setEntreprise] = useState("");
   const [objetType, setObjetType] = useState<"Professionnel" | "Particulier">("Professionnel");
+  const [objetChoice, setObjetChoice] = useState<PredefinedObject>("Performance Industrielle");
+  const [autrePrecision, setAutrePrecision] = useState("");
   const [message, setMessage] = useState("");
   const [isSent, setIsSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,6 +40,11 @@ export default function ContactInvitations() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const finalObjet =
+      objetChoice === "Autres" && autrePrecision.trim()
+        ? `Autres: ${autrePrecision.trim()}`
+        : objetChoice;
+
     try {
       if (WEB3FORMS_ACCESS_KEY) {
         await fetch("https://api.web3forms.com/submit", {
@@ -37,17 +55,17 @@ export default function ContactInvitations() {
           },
           body: JSON.stringify({
             access_key: WEB3FORMS_ACCESS_KEY,
-            subject: `[${objetType}] Nouveau message de ${prenom} ${nom} via juliensaliou.com`,
+            subject: `[${objetType}][${finalObjet}] Message de ${prenom} ${nom} via juliensaliou.com`,
             from_name: `${prenom} ${nom}`,
             name: `${prenom} ${nom}`,
             email: email,
             entreprise: entreprise || "Non précisée",
             profil: objetType,
+            objet: finalObjet,
             message: message
           })
         });
       } else {
-        // En attente de la clé Web3Forms, simule une transition d'envoi fluide de 500ms
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     } catch (err) {
@@ -65,6 +83,8 @@ export default function ContactInvitations() {
     setEmail("");
     setEntreprise("");
     setObjetType("Professionnel");
+    setObjetChoice("Performance Industrielle");
+    setAutrePrecision("");
     setMessage("");
   };
 
@@ -182,10 +202,10 @@ export default function ContactInvitations() {
                 </div>
               </div>
 
-              {/* Objet du message : Particulier / Professionnel */}
+              {/* Vous êtes : Professionnel / Particulier */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 font-mono">
-                  Objet du message (Vous êtes) <span className="text-emerald-600">*</span>
+                  Vous êtes <span className="text-emerald-600">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
@@ -214,6 +234,45 @@ export default function ContactInvitations() {
                     <span>Particulier</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Objet : Champs prédéfinis */}
+              <div>
+                <label htmlFor="contact-objet" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 font-mono">
+                  Objet <span className="text-emerald-600">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {PREDEFINED_OBJECTS.map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setObjetChoice(opt)}
+                      className={`px-3 py-2.5 rounded-xl border text-xs font-medium text-left transition cursor-pointer flex items-center justify-between ${
+                        objetChoice === opt
+                          ? "bg-slate-900 border-slate-900 text-white shadow-sm font-semibold"
+                          : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+                      }`}
+                    >
+                      <span className="truncate">{opt}</span>
+                      {objetChoice === opt && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 ml-1.5" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Champ texte complémentaire si 'Autres' est sélectionné */}
+                {objetChoice === "Autres" && (
+                  <div className="mt-2.5">
+                    <input
+                      type="text"
+                      value={autrePrecision}
+                      onChange={(e) => setAutrePrecision(e.target.value)}
+                      placeholder="Précisez votre demande ou sujet particulier..."
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Votre message (champ libre) */}

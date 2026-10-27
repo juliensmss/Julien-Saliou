@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Navbar, { SystemiaTab } from "./components/Navbar";
 import PortfolioView from "./components/PortfolioView";
-import ResearchInnovationDocs from "./components/ResearchInnovationDocs";
 import ToolsSimulators from "./components/ToolsSimulators";
 import ContactInvitations from "./components/ContactInvitations";
 
@@ -9,36 +8,32 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<SystemiaTab>("portfolio");
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 font-sans selection:bg-emerald-600 selection:text-white">
-      {/* 1. Global Navigation Bar with SYSTEMIA title and 4 Tabs */}
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-emerald-600 selection:text-white">
+      {/* 1. Global Navigation Bar with 3 Tabs */}
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* 2. Main Content Tab Container */}
       <main className="flex-1 w-full">
         {activeTab === "portfolio" && (
           <div className="w-full">
-            {/* Existing Portfolio View with contact navigation callback */}
-            <PortfolioView onNavigateToContact={() => setActiveTab("contact")} />
+            {/* Portfolio View with contact and solutions navigation callbacks */}
+            <PortfolioView 
+              onNavigateToContact={() => setActiveTab("contact")} 
+              onNavigateToTools={() => setActiveTab("tools")}
+            />
           </div>
         )}
 
         {activeTab === "tools" && (
           <div className="w-full">
-            {/* Tab 2: Outils & Simulateurs (SCAN-FOCUS-ACT, Eau, Solaire) */}
+            {/* Tab 2: Solutions */}
             <ToolsSimulators />
-          </div>
-        )}
-
-        {activeTab === "canvas" && (
-          <div className="w-full">
-            {/* Tab 3: Recherche & Innovation (Dispositif Google Docs Admin/Visiteur) */}
-            <ResearchInnovationDocs />
           </div>
         )}
 
         {activeTab === "contact" && (
           <div className="w-full">
-            {/* Tab 4: Contact & Invitations */}
+            {/* Tab 3: Contact & Invitations */}
             <ContactInvitations />
           </div>
         )}

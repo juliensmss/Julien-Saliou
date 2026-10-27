@@ -28,14 +28,14 @@ import {
 import { PROJECTS } from "../data";
 import ProjectDetailsModal from "./ProjectDetailsModal";
 import SmartImage, { SmartProfileImage, SmartCoverImage } from "./SmartImage";
-import AiAssistant from "./AiAssistant";
 import { Project } from "../types";
 
 interface PortfolioViewProps {
   onNavigateToContact?: () => void;
+  onNavigateToTools?: () => void;
 }
 
-export default function PortfolioView({ onNavigateToContact }: PortfolioViewProps) {
+export default function PortfolioView({ onNavigateToContact, onNavigateToTools }: PortfolioViewProps) {
   const [projectFilter, setProjectFilter] = useState<"all" | "energy" | "lean" | "digital" | "ia" | string>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,7 +149,7 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
               Ravi de vous accueillir sur cet espace pour vous permettre de faire plus ample connaissance avec mon parcours et mes réalisations.
             </p>
             <p>
-              J'ai bâti ma carrière sur une understanding concrète des réalités industrielles, au plus près des équipements et des métiers industriels.
+              J'ai bâti ma carrière sur une compréhension concrète des réalités industrielles, au plus près des équipements et des métiers industriels.
             </p>
             <p>
               Aujourd'hui, avec plus de 15 années d'expérience, j’ai développé une double expertise : une maîtrise robuste des enjeux métiers alliée à une vision stratégique de conseil. Passionné par les systèmes complexes, je cultive également une forte curiosité pour les sciences humaines et l'innovation digitale, cherchant toujours à lier la rigueur de l'ingénieur à la compréhension du facteur humain.
@@ -177,7 +177,7 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
               </div>
             </div>
             
-            <p className={`text-xs sm:text-sm ${themeTextMuted} leading-relaxed`}>
+            <p className="text-xs sm:text-sm text-neutral-900 leading-relaxed font-normal">
               Une expérience opérationnelle de premier plan acquise dans des environnements industriels (Nucléaire, Pétrochimie, Agroalimentaire) où la rigueur technique, la sûreté absolue et l'excellence opérationnelle sont indispensables.
             </p>
             <p className="text-[11px] font-mono text-emerald-500/90 flex items-center gap-1">
@@ -256,8 +256,8 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
               </div>
             </div>
 
-            <p className={`text-xs sm:text-sm ${themeText} leading-relaxed`}>
-              J'ai mis cette solide expérience terrain au service du conseil, évoluant de l'exécution technique au pilotage de schémas directeurs. Mon parcours en tant que <strong className="text-neutral-900 font-semibold">Consultant Sénior</strong> m'a permis d'orchestrer des projets d'envergure : du déploiement de solutions <strong className="text-neutral-900 font-medium">Industrie 4.0</strong> à l'accompagnement international de <strong className="text-neutral-900 font-medium">systèmes de management de l'énergie</strong>, jusqu'à l'audit de <strong className="text-neutral-900 font-medium">stratégies industrielles complexes</strong>.
+            <p className="text-xs sm:text-sm text-neutral-900 leading-relaxed font-normal">
+              Depuis 2021, j'ai effectué des missions en tant que consultant sur la performance industrielle, la performance énergétique et la transformation digitale.
             </p>
 
             <div className="space-y-3 mt-4" id="project-details-intro">
@@ -351,6 +351,40 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
           </div>
         </div>
 
+        {/* 6b. Full-width block: 2026 à ce jour : Création de solution Web */}
+        <div 
+          className={`mt-10 p-5 sm:p-6 rounded-xl border ${themeBorder} bg-gradient-to-r from-neutral-50 via-white to-blue-50/20 hover:border-blue-300 transition-all duration-200 shadow-sm`} 
+          id="web-solutions-block"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="shrink-0 text-lg">🚀</span>
+                <h3 className="text-base sm:text-lg font-bold text-black tracking-tight">
+                  2026 à ce jour : Création de solution Web
+                </h3>
+                <span className="text-[9px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider inline-block">
+                  Solutions Web & SaaS
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-neutral-900 leading-relaxed font-normal">
+                Développement de solutions web applicatives, outils d'aide à la décision industrielle, simulateurs d'autonomie et plateformes interactives.
+              </p>
+            </div>
+
+            {onNavigateToTools && (
+              <button
+                onClick={onNavigateToTools}
+                className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold transition-all duration-150 shadow-sm cursor-pointer group"
+                title="Accéder à l'onglet Solutions"
+              >
+                <span>Accéder à l'onglet « Solutions »</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* 7. Gallery Database View Section */}
         <div className={`mt-14 space-y-4 border-t ${themeBorder} pt-10`} id="projects-gallery-section">
           <h2 className={`text-xl sm:text-[22px] font-bold ${themeTitle} tracking-tight flex items-center gap-2`}>
@@ -366,8 +400,7 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
                   { id: "all", label: "Tous", color: "bg-slate-200 text-slate-900 font-semibold border border-slate-300" },
                   { id: "energy", label: "Énergie", color: "bg-emerald-50 text-emerald-800 border border-emerald-200" },
                   { id: "lean", label: "Performance et Stratégie Industrielle", color: "bg-amber-50 text-amber-800 border border-amber-200" },
-                  { id: "digital", label: "Transformation Digitale", color: "bg-sky-50 text-sky-800 border border-sky-200" },
-                  { id: "ia", label: "Intelligence Artificielle (IA)", color: "bg-purple-50 text-purple-800 border border-purple-200" }
+                  { id: "digital", label: "Transformation Digitale", color: "bg-sky-50 text-sky-800 border border-sky-200" }
                 ].map((item) => (
                   <button
                     key={item.id}
@@ -866,9 +899,6 @@ export default function PortfolioView({ onNavigateToContact }: PortfolioViewProp
 
       {/* 12. Dynamic Modal Detailed Popups */}
       <ProjectDetailsModal project={selectedProject} onClose={() => setSelectedProject(null)} isDarkMode={false} />
-      {/* 15. Real-Time Server-Side Conversational AI Copilot widget */}
-      <AiAssistant />
-
     </div>
   );
 }

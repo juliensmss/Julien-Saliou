@@ -313,10 +313,10 @@ export default function ToolsSimulators() {
       <div className="max-w-6xl mx-auto mb-8 text-center sm:text-left">
         <div className="border-b border-slate-200 pb-6">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Outils
+            Solutions
           </h1>
           <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-3xl leading-relaxed">
-            De par mon expérience, mes expertises et mes domaines de prédilection, il me paraissait intéressant de proposer des outils et méthodes pour vous fournir un aperçu concret de mon savoir-faire.
+            De par mon expérience, mes expertises et mes domaines de prédilection, il me paraissait intéressant de proposer des outils, méthodes et solutions pour vous fournir un aperçu concret de mon savoir-faire.
           </p>
         </div>
       </div>
