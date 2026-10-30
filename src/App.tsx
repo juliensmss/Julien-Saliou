@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar, { SystemiaTab } from "./components/Navbar";
 import PortfolioView from "./components/PortfolioView";
 import ToolsSimulators from "./components/ToolsSimulators";
 import ContactInvitations from "./components/ContactInvitations";
+import CookieBanner from "./components/CookieBanner";
+import { trackTabChange } from "./lib/analytics";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<SystemiaTab>("portfolio");
 
+  const handleTabChange = (tab: SystemiaTab) => {
+    setActiveTab(tab);
+    trackTabChange(tab);
+  };
+
+  useEffect(() => {
+    // Initial page/tab view tracking
+    trackTabChange("portfolio");
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-emerald-600 selection:text-white">
       {/* 1. Global Navigation Bar with 3 Tabs */}
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* 2. Main Content Tab Container */}
       <main className="flex-1 w-full">
@@ -18,8 +30,8 @@ export default function App() {
           <div className="w-full">
             {/* Portfolio View with contact and solutions navigation callbacks */}
             <PortfolioView 
-              onNavigateToContact={() => setActiveTab("contact")} 
-              onNavigateToTools={() => setActiveTab("tools")}
+              onNavigateToContact={() => handleTabChange("contact")} 
+              onNavigateToTools={() => handleTabChange("tools")}
             />
           </div>
         )}
@@ -38,6 +50,9 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* 3. Bandeau RGPD discret de gestion des cookies */}
+      <CookieBanner />
     </div>
   );
 }

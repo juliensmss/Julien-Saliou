@@ -1,5 +1,6 @@
 import React from "react";
 import { Factory, CheckCircle2, Cpu, TrendingDown, Activity, ExternalLink } from "lucide-react";
+import { trackUnismeClick } from "../../lib/analytics";
 
 export default function SmeIso50001Module() {
   return (
@@ -59,6 +60,7 @@ export default function SmeIso50001Module() {
               href="https://unisme.juliensaliou.com/"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackUnismeClick("module_sme_solutions")}
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all group"
             >
               <span>Découvrir la solution SMÉ ISO 50001 en direct ↗</span>

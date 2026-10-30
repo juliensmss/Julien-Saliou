@@ -6,6 +6,28 @@
     <title>Portfolio : Julien Saliou</title>
     <link rel="icon" type="image/png" href="/logo-infinity.png" />
     <link rel="apple-touch-icon" href="/logo-infinity.png" />
+    
+    <!-- Google tag (gtag.js) GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0F2BCPFXJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Respect du consentement RGPD (défini sur 'granted' si accepté, 'denied' sinon)
+      var savedConsent = null;
+      try {
+        savedConsent = localStorage.getItem('ga_consent_status');
+      } catch (e) {}
+
+      gtag('consent', 'default', {
+        'analytics_storage': savedConsent === 'granted' ? 'granted' : 'denied'
+      });
+
+      gtag('config', 'G-R0F2BCPFXJ', {
+        send_page_view: true
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -23,7 +23,8 @@ import {
   Factory,
   Brain,
   Activity,
-  Target
+  Target,
+  Coins
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -219,20 +220,21 @@ export default function ToolsSimulators() {
   }, [waterRoofArea, waterPluvio, waterPersons, waterDualNetwork, waterTankM3]);
 
   // -------------------------------------------------------------
-  // TOOL 3: SOLAR & ENERGY CONVERSION SIMULATOR
+  // TOOL 3: SOLAR & GRID RESALE SIMULATOR
   // -------------------------------------------------------------
   const [solarCapacityKwc, setSolarCapacityKwc] = useState<number>(6);
   const [solarDeptCode, setSolarDeptCode] = useState<string>("33");
   const [solarIrradiance, setSolarIrradiance] = useState<number>(1380); // kWh/m²/year (33 - Gironde)
   const [solarAnnualDemandKwh, setSolarAnnualDemandKwh] = useState<number>(4200);
   const [solarBatteryKwh, setSolarBatteryKwh] = useState<number>(10);
-  const [solarSurplusStfPercent, setSolarSurplusStfPercent] = useState<number>(50); // % surplus to STF/H2
-  const [solarConversionEfficiency, setSolarConversionEfficiency] = useState<number>(65); // % efficiency (65% PEM electrolysis or 15% STF)
+  const [solarContractMode, setSolarContractMode] = useState<"surplus" | "total">("surplus"); // "surplus" = Autoconsommation + vente surplus | "total" = Vente totale
+  const [solarFeedInTariff, setSolarFeedInTariff] = useState<number>(0.13); // €/kWh (Tarif d'achat EDF OA surplus ~0.13 €/kWh)
+  const [solarGridPrice, setSolarGridPrice] = useState<number>(0.25); // €/kWh (Prix moyen électricité réseau évitée ~0.25 €/kWh)
 
   const solarSimulation = useMemo(() => {
     // Solar production seasonality in Western Europe
     const solarMonthCoeffs = [0.03, 0.05, 0.08, 0.11, 0.13, 0.14, 0.15, 0.13, 0.09, 0.05, 0.03, 0.02];
-    // Household consumption seasonality (more in winter for lighting/cooking)
+    // Household consumption seasonality (more in winter for heating/lighting)
     const demandMonthCoeffs = [0.12, 0.11, 0.10, 0.08, 0.07, 0.06, 0.06, 0.06, 0.07, 0.09, 0.11, 0.13];
     const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
 
@@ -240,60 +242,92 @@ export default function ToolsSimulators() {
 
     let directSelfConsumedTotal = 0;
     let batteryStoredTotal = 0;
-    let surplusConvertedTotal = 0;
-    let gridFedTotal = 0;
+    let surplusSoldTotal = 0;
 
     const monthlyData = monthNames.map((month, idx) => {
       const prod = totalAnnualProductionKwh * solarMonthCoeffs[idx];
       const demand = solarAnnualDemandKwh * demandMonthCoeffs[idx];
 
-      const direct = Math.min(prod, demand * 0.45); // Direct daytime consumption
-      const surplusAfterDirect = Math.max(0, prod - direct);
+      let direct = 0;
+      let batteryMonthlyCapacity = 0;
+      let surplusSold = 0;
 
-      // Battery storage capability (max 30 cycles equivalent / month)
-      const batteryMonthlyCapacity = Math.min(surplusAfterDirect, solarBatteryKwh * 25);
-      const remainingSurplus = Math.max(0, surplusAfterDirect - batteryMonthlyCapacity);
-
-      // Conversion to H2 / STF
-      const toStf = (remainingSurplus * solarSurplusStfPercent) / 100;
-      const injectedGrid = remainingSurplus - toStf;
+      if (solarContractMode === "total") {
+        surplusSold = prod;
+        direct = 0;
+        batteryMonthlyCapacity = 0;
+      } else {
+        direct = Math.min(prod, demand * 0.45);
+        const surplusAfterDirect = Math.max(0, prod - direct);
+        batteryMonthlyCapacity = Math.min(surplusAfterDirect, solarBatteryKwh * 25);
+        surplusSold = Math.max(0, surplusAfterDirect - batteryMonthlyCapacity);
+      }
 
       directSelfConsumedTotal += direct;
       batteryStoredTotal += batteryMonthlyCapacity;
-      surplusConvertedTotal += toStf;
-      gridFedTotal += injectedGrid;
+      surplusSoldTotal += surplusSold;
+
+      const monthlyResaleIncome = surplusSold * solarFeedInTariff;
+      const monthlySavings = (direct + batteryMonthlyCapacity) * solarGridPrice;
 
       return {
         month,
         productionKwh: Math.round(prod),
         besoinKwh: Math.round(demand),
-        autoconsommee: Math.round(direct + batteryMonthlyCapacity),
-        surplusH2: Math.round(toStf)
+        autoconsommeeKwh: Math.round(direct + batteryMonthlyCapacity),
+        surplusReventeKwh: Math.round(surplusSold),
+        gainMensuelEuros: Math.round(monthlyResaleIncome + monthlySavings),
+        revenuReventeEuros: Math.round(monthlyResaleIncome)
       };
     });
 
-    const totalUtilized = directSelfConsumedTotal + batteryStoredTotal;
-    const selfConsumptionRate = Math.min(100, Math.round(((totalUtilized + surplusConvertedTotal) / totalAnnualProductionKwh) * 100));
-    const coverageRate = Math.min(100, Math.round((totalUtilized / solarAnnualDemandKwh) * 100));
+    const totalSelfConsumedKwh = directSelfConsumedTotal + batteryStoredTotal;
+    const selfConsumptionRate = totalAnnualProductionKwh > 0
+      ? Math.min(100, Math.round((totalSelfConsumedKwh / totalAnnualProductionKwh) * 100))
+      : 0;
+    const coverageRate = solarAnnualDemandKwh > 0
+      ? Math.min(100, Math.round((totalSelfConsumedKwh / solarAnnualDemandKwh) * 100))
+      : 0;
 
-    // 1 kg H2 = ~33.3 kWh LHV; with conversion efficiency
-    const chemicalEnergyOutputKwh = surplusConvertedTotal * (solarConversionEfficiency / 100);
-    const hydrogenKgProduced = Number((chemicalEnergyOutputKwh / 33.3).toFixed(1));
-    const co2SavedKg = Math.round((totalUtilized + chemicalEnergyOutputKwh) * 0.08); // avg grid offset 80g/kWh
+    const annualResaleIncome = surplusSoldTotal * solarFeedInTariff;
+    const annualBillSavings = totalSelfConsumedKwh * solarGridPrice;
+    const totalAnnualGain = annualResaleIncome + annualBillSavings;
 
-    const breakdownData = [
-      { name: "Autoconsommation directe", value: Math.round(directSelfConsumedTotal), color: "#0284c7" },
-      { name: "Stockage Batterie BT", value: Math.round(batteryStoredTotal), color: "#10b981" },
-      { name: "Conversion H₂ / Vecteur STF", value: Math.round(surplusConvertedTotal), color: "#8b5cf6" },
-      { name: "Surplus résiduel réseau", value: Math.round(gridFedTotal), color: "#94a3b8" }
-    ];
+    // Projection 20 ans (durée standard contrat d'obligation d'achat EDF OA)
+    const cumulativeGain20Years = Math.round(totalAnnualGain * 20);
+    const cumulativeResale20Years = Math.round(annualResaleIncome * 20);
+    const cumulativeSavings20Years = Math.round(annualBillSavings * 20);
+
+    const estimatedInstallCost = Math.round(
+      solarCapacityKwc * 1600 + (solarContractMode === "surplus" ? solarBatteryKwh * 450 : 0)
+    );
+    const paybackYears = totalAnnualGain > 0 ? (estimatedInstallCost / totalAnnualGain).toFixed(1) : "—";
+    const co2SavedKg = Math.round(totalAnnualProductionKwh * 0.08);
+
+    const breakdownData = solarContractMode === "total"
+      ? [
+          { name: "Revente Totale Réseau (EDF OA)", value: Math.round(surplusSoldTotal), color: "#f59e0b" }
+        ]
+      : [
+          { name: "Autoconsommation directe", value: Math.round(directSelfConsumedTotal), color: "#0284c7" },
+          { name: "Stockage Batterie BT", value: Math.round(batteryStoredTotal), color: "#10b981" },
+          { name: "Surplus Revente Réseau (EDF OA)", value: Math.round(surplusSoldTotal), color: "#f59e0b" }
+        ];
 
     return {
       totalAnnualProductionKwh: Math.round(totalAnnualProductionKwh),
+      totalSelfConsumedKwh: Math.round(totalSelfConsumedKwh),
+      surplusSoldTotal: Math.round(surplusSoldTotal),
       selfConsumptionRate,
       coverageRate,
-      surplusConvertedTotal: Math.round(surplusConvertedTotal),
-      hydrogenKgProduced,
+      annualResaleIncome: Math.round(annualResaleIncome),
+      annualBillSavings: Math.round(annualBillSavings),
+      totalAnnualGain: Math.round(totalAnnualGain),
+      cumulativeGain20Years,
+      cumulativeResale20Years,
+      cumulativeSavings20Years,
+      estimatedInstallCost,
+      paybackYears,
       co2SavedKg,
       monthlyData,
       breakdownData
@@ -303,8 +337,9 @@ export default function ToolsSimulators() {
     solarIrradiance,
     solarAnnualDemandKwh,
     solarBatteryKwh,
-    solarSurplusStfPercent,
-    solarConversionEfficiency
+    solarContractMode,
+    solarFeedInTariff,
+    solarGridPrice
   ]);
 
   return (
@@ -452,7 +487,7 @@ export default function ToolsSimulators() {
             {/* B2C Sub-Tabs Switcher */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
-                {/* 1. Simulateurs d'Autonomie (Eau & Solaire / H₂) à GAUCHE */}
+                {/* 1. Simulateurs d'Autonomie (Eau & Solaire Photovoltaïque) à GAUCHE */}
                 <button
                   type="button"
                   onClick={() => setB2cView("autonomy")}
@@ -463,7 +498,7 @@ export default function ToolsSimulators() {
                   }`}
                 >
                   <Workflow className="w-4 h-4" />
-                  <span>Simulateurs d'Autonomie (Eau & Solaire / H₂)</span>
+                  <span>Simulateurs d'Autonomie (Eau & Solaire)</span>
                 </button>
 
                 {/* 2. Junivers (Introspection IA) à DROITE */}
@@ -522,10 +557,10 @@ export default function ToolsSimulators() {
                       </div>
 
                       <h4 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition">
-                        Simulateurs d'Autonomie (Eau & Solaire / H₂)
+                        Simulateurs d'Autonomie (Eau & Solaire Photovoltaïque)
                       </h4>
                       <p className="text-xs text-slate-600 leading-relaxed">
-                        Démarche séquentielle <strong>SCAN – FOCUS – ACT</strong>, calculateurs de dimensionnement hydrique (réseau double eau de pluie), énergie solaire et résilience domestique.
+                        Démarche séquentielle <strong>SCAN – FOCUS – ACT</strong>, calculateurs de dimensionnement hydrique (réseau double eau de pluie), énergie solaire et revente réseau.
                       </p>
                     </div>
 
@@ -580,7 +615,7 @@ export default function ToolsSimulators() {
                       Démarche Séquentielle Interactive
                     </span>
                     <h3 className="text-base font-bold text-slate-900 mt-0.5">
-                      Simulateurs d'Autonomie : Eau & Solaire / H₂
+                      Simulateurs d'Autonomie : Eau & Solaire Photovoltaïque
                     </h3>
                     <p className="text-xs text-slate-500 mt-0.5">
                       Démarche séquentielle <strong>SCAN – FOCUS – ACT</strong> intégrée : explorez l'audit terrain (SCAN), le cadrage (FOCUS) et le plan d'action (ACT), ou basculez sur les calculateurs experts.
@@ -621,7 +656,7 @@ export default function ToolsSimulators() {
                       }`}
                     >
                       <Sun className="w-3.5 h-3.5 text-amber-500" />
-                      <span>Solaire & H₂</span>
+                      <span>Solaire & Revente</span>
                     </button>
                   </div>
                 </div>
@@ -1467,21 +1502,76 @@ export default function ToolsSimulators() {
         )}
 
         {/* ========================================================= */}
-        {/* TOOL 3: SIMULATEUR SOLAIRE & CONVERSION ÉNERGÉTIQUE       */}
+        {/* TOOL 3: SIMULATEUR SOLAIRE PHOTOVOLTAÏQUE & REVENTE RÉSEAU */}
         {/* ========================================================= */}
         {autonomyTool === "solar" && (
           <div className="space-y-6">
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
               <div className="border-b border-slate-100 pb-4 mb-6">
-                <span className="text-xs font-mono font-semibold text-amber-500 uppercase">
-                  Photovoltaïque & Décarbonation Moléculaire
+                <span className="text-xs font-mono font-semibold text-amber-500 uppercase flex items-center gap-1.5">
+                  <Sun className="w-3.5 h-3.5" />
+                  Photovoltaïque & Valorisation Économique
                 </span>
                 <h2 className="text-xl font-bold text-slate-900 mt-0.5">
-                  Simulateur Solaire, Stockage BT & Conversion Énergétique (H₂ / STF)
+                  Simulateur Solaire Photovoltaïque, Autoconsommation & Revente Réseau
                 </h2>
                 <p className="text-xs text-slate-600 mt-1">
-                  Modélisez l'arbitrage entre autoconsommation directe, stockage électrochimique sur batterie basse tension et valorisation de l'excédent estival sous forme de vecteur chimique (Photosynthèse Artificielle STF / Hydrogène vert).
+                  Modélisez la production de votre toiture photovoltaïque, arbitrez entre autoconsommation (avec batterie basse tension) et valorisation de votre électricité sur le réseau public, avec calcul précis des revenus de revente garantis (contrat d'obligation d'achat EDF OA sur 20 ans).
                 </p>
+              </div>
+
+              {/* Mode de valorisation : Autoconsommation + Surplus OU Vente Totale */}
+              <div className="mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <label className="block text-xs font-bold uppercase font-mono text-slate-700 mb-2.5">
+                  Type de contrat & Valorisation de l'électricité :
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSolarContractMode("surplus");
+                      setSolarFeedInTariff(0.13);
+                    }}
+                    className={`p-3.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                      solarContractMode === "surplus"
+                        ? "bg-amber-50 border-amber-400 ring-2 ring-amber-300/40 text-amber-950 shadow-sm"
+                        : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold">Autoconsommation + Vente du Surplus</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
+                        Recommandé
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-snug">
+                      Vous consommez en priorité votre électricité (réduction immédiate de la facture) et vendez l'excédent au tarif garanti EDF OA.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSolarContractMode("total");
+                      setSolarFeedInTariff(0.143);
+                    }}
+                    className={`p-3.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
+                      solarContractMode === "total"
+                        ? "bg-amber-50 border-amber-400 ring-2 ring-amber-300/40 text-amber-950 shadow-sm"
+                        : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold">Vente Totale au Réseau (100%)</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">
+                        Injection intégrale
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-snug">
+                      100% de la production solaire est injectée et vendue sur le réseau électrique public avec un compteur dédié.
+                    </p>
+                  </button>
+                </div>
               </div>
 
               {/* Sliders Grid */}
@@ -1501,94 +1591,8 @@ export default function ToolsSimulators() {
                     className="w-full accent-amber-500"
                   />
                   <p className="text-[10px] text-slate-500 mt-0.5">
-                    Surface requise : ~{Math.round(solarCapacityKwc * 5)} m² de toiture
+                    Surface de toiture requise : ~{Math.round(solarCapacityKwc * 5)} m² (~{Math.round(solarCapacityKwc / 0.42)} panneaux)
                   </p>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-600">Stockage Batterie Basse Tension :</span>
-                    <span className="font-mono font-bold text-emerald-600">{solarBatteryKwh} kWh</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={25}
-                    step={1}
-                    value={solarBatteryKwh}
-                    onChange={e => setSolarBatteryKwh(Number(e.target.value))}
-                    className="w-full accent-emerald-600"
-                  />
-                  <p className="text-[10px] text-slate-500 mt-0.5">
-                    Technologie recommandée : LiFePO4 24V ou 48V
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-600">Consommation annuelle foyer :</span>
-                    <span className="font-mono font-bold text-slate-900">{solarAnnualDemandKwh} kWh/an</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={1500}
-                    max={10000}
-                    step={250}
-                    value={solarAnnualDemandKwh}
-                    onChange={e => setSolarAnnualDemandKwh(Number(e.target.value))}
-                    className="w-full accent-slate-800"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-600">Part Excédent vers Conversion H₂ / STF :</span>
-                    <span className="font-mono font-bold text-purple-600">{solarSurplusStfPercent}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={solarSurplusStfPercent}
-                    onChange={e => setSolarSurplusStfPercent(Number(e.target.value))}
-                    className="w-full accent-purple-600"
-                  />
-                  <p className="text-[10px] text-slate-500 mt-0.5">
-                    Activation des réacteurs de dissociation d'eau hors réseau
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-600">Rendement de Conversion chimique :</span>
-                    <span className="font-mono font-bold text-purple-600">{solarConversionEfficiency}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={10}
-                    max={80}
-                    step={5}
-                    value={solarConversionEfficiency}
-                    onChange={e => setSolarConversionEfficiency(Number(e.target.value))}
-                    className="w-full accent-purple-600"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <button
-                      type="button"
-                      onClick={() => setSolarConversionEfficiency(65)}
-                      className="text-[10px] px-1.5 py-0.5 bg-slate-100 rounded text-slate-700"
-                    >
-                      Électrolyseur (65%)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSolarConversionEfficiency(18)}
-                      className="text-[10px] px-1.5 py-0.5 bg-slate-100 rounded text-slate-700"
-                    >
-                      Photosynthèse STF (18%)
-                    </button>
-                  </div>
                 </div>
 
                 <div>
@@ -1619,14 +1623,124 @@ export default function ToolsSimulators() {
                     ))}
                   </select>
                 </div>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Tarif de Revente au Réseau :</span>
+                    <span className="font-mono font-bold text-emerald-600">
+                      {(solarFeedInTariff * 100).toFixed(1)} c€/kWh ({solarFeedInTariff.toFixed(3)} €)
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.05}
+                    max={0.25}
+                    step={0.005}
+                    value={solarFeedInTariff}
+                    onChange={e => setSolarFeedInTariff(Number(e.target.value))}
+                    className="w-full accent-emerald-600"
+                  />
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setSolarFeedInTariff(0.13)}
+                      className={`text-[10px] px-2 py-0.5 rounded transition ${
+                        solarFeedInTariff === 0.13 ? "bg-emerald-600 text-white font-semibold" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      EDF OA Surplus (13 c€)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSolarFeedInTariff(0.143)}
+                      className={`text-[10px] px-2 py-0.5 rounded transition ${
+                        solarFeedInTariff === 0.143 ? "bg-emerald-600 text-white font-semibold" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      Vente Totale ≤9kWc (14.3 c€)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSolarFeedInTariff(0.08)}
+                      className={`text-[10px] px-2 py-0.5 rounded transition ${
+                        solarFeedInTariff === 0.08 ? "bg-emerald-600 text-white font-semibold" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      Marché Spot (8 c€)
+                    </button>
+                  </div>
+                </div>
+
+                {solarContractMode === "surplus" && (
+                  <>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-600">Consommation annuelle foyer :</span>
+                        <span className="font-mono font-bold text-slate-900">{solarAnnualDemandKwh} kWh/an</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={1500}
+                        max={10000}
+                        step={250}
+                        value={solarAnnualDemandKwh}
+                        onChange={e => setSolarAnnualDemandKwh(Number(e.target.value))}
+                        className="w-full accent-slate-800"
+                      />
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Moyenne française : ~4 500 kWh/an (hors gros chauffage électrique)
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-600">Stockage Batterie Basse Tension :</span>
+                        <span className="font-mono font-bold text-emerald-600">{solarBatteryKwh} kWh</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={25}
+                        step={1}
+                        value={solarBatteryKwh}
+                        onChange={e => setSolarBatteryKwh(Number(e.target.value))}
+                        className="w-full accent-emerald-600"
+                      />
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Technologie recommandée : LiFePO4 24V ou 48V (0 kWh = sans batterie)
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-600">Prix électricité réseau évitée :</span>
+                        <span className="font-mono font-bold text-slate-900">
+                          {(solarGridPrice * 100).toFixed(1)} c€/kWh ({solarGridPrice.toFixed(3)} €)
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0.15}
+                        max={0.40}
+                        step={0.01}
+                        value={solarGridPrice}
+                        onChange={e => setSolarGridPrice(Number(e.target.value))}
+                        className="w-full accent-slate-700"
+                      />
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Tarif Réglementé Bleu EDF TTC actuel : ~25,1 c€/kWh
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* KPI Results Bar */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3.5 mb-6">
                 <div>
                   <p className="text-[11px] text-slate-500 font-mono">Production Solaire Annuelle</p>
                   <p className="text-xl font-black text-amber-600 font-mono">
-                    {solarSimulation.totalAnnualProductionKwh} <span className="text-xs font-normal text-slate-500">kWh</span>
+                    {solarSimulation.totalAnnualProductionKwh.toLocaleString("fr-FR")} <span className="text-xs font-normal text-slate-500">kWh/an</span>
                   </p>
                   <span className="text-[10px] text-slate-500">
                     Ratio de performance 0.85
@@ -1634,37 +1748,51 @@ export default function ToolsSimulators() {
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-slate-500 font-mono">Taux d'Autoconsommation</p>
+                  <p className="text-[11px] text-slate-500 font-mono">
+                    {solarContractMode === "surplus" ? "Taux d'Autoconsommation" : "Part Réinjectée Réseau"}
+                  </p>
                   <p className="text-xl font-black text-emerald-600 font-mono">
-                    {solarSimulation.selfConsumptionRate}%
+                    {solarContractMode === "surplus" ? `${solarSimulation.selfConsumptionRate}%` : "100%"}
                   </p>
-                  <span className="text-[10px] text-slate-500">Direct + Batterie + H₂</span>
+                  <span className="text-[10px] text-slate-500">
+                    {solarContractMode === "surplus"
+                      ? `${solarSimulation.coverageRate}% des besoins couverts`
+                      : "Injection totale garantie"}
+                  </span>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-slate-500 font-mono">Hydrogène Solaire Produit</p>
-                  <p className="text-xl font-black text-purple-600 font-mono">
-                    {solarSimulation.hydrogenKgProduced} <span className="text-xs font-normal text-slate-500">kg H₂/an</span>
+                  <p className="text-[11px] text-slate-500 font-mono">Revenus de Revente Réseau</p>
+                  <p className="text-xl font-black text-emerald-700 font-mono">
+                    {solarSimulation.annualResaleIncome.toLocaleString("fr-FR")} <span className="text-xs font-normal text-slate-500">€ / an</span>
                   </p>
-                  <span className="text-[10px] text-slate-500">Équivalent ~{Math.round(solarSimulation.hydrogenKgProduced * 3.7)} L d'essence</span>
+                  <span className="text-[10px] text-slate-500">
+                    {solarSimulation.surplusSoldTotal.toLocaleString("fr-FR")} kWh vendus / an
+                  </span>
                 </div>
 
                 <div>
-                  <p className="text-[11px] text-slate-500 font-mono">CO₂ Évité</p>
+                  <p className="text-[11px] text-slate-500 font-mono">Gain Économique Global</p>
                   <p className="text-xl font-black text-slate-900 font-mono">
-                    {solarSimulation.co2SavedKg} <span className="text-xs font-normal text-slate-500">kg CO₂</span>
+                    {solarSimulation.totalAnnualGain.toLocaleString("fr-FR")} <span className="text-xs font-normal text-slate-500">€ / an</span>
                   </p>
-                  <span className="text-[10px] text-emerald-600 font-medium">Par an</span>
+                  <span className="text-[10px] text-emerald-600 font-medium">
+                    {solarContractMode === "surplus"
+                      ? `${solarSimulation.annualBillSavings} € économisés + ${solarSimulation.annualResaleIncome} € vendus`
+                      : "Revenus garantis annuels"}
+                  </span>
                 </div>
               </div>
 
-              {/* Monthly Production vs Demand Charts */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Monthly Production vs Resale Charts */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 {/* 12-Month Area Chart */}
                 <div className="lg:col-span-2">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xs font-bold font-mono uppercase text-slate-800">
-                      Production Solaire Mensuelle vs Besoins du Foyer (kWh)
+                      {solarContractMode === "surplus"
+                        ? "Production Solaire, Consommation & Surplus Revendu au Réseau (kWh)"
+                        : "Production Solaire & Électricité Vendue au Réseau (kWh)"}
                     </h3>
                   </div>
                   <div className="h-64 w-full">
@@ -1684,6 +1812,7 @@ export default function ToolsSimulators() {
                             fontSize: "12px",
                             color: "#fff"
                           }}
+                          formatter={(value: any, name: any) => [`${value} kWh`, name]}
                         />
                         <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }} />
                         <Area
@@ -1693,20 +1822,21 @@ export default function ToolsSimulators() {
                           stroke="#f59e0b"
                           fill="#fef3c7"
                         />
+                        {solarContractMode === "surplus" && (
+                          <Area
+                            type="monotone"
+                            dataKey="besoinKwh"
+                            name="Besoin Foyer (kWh)"
+                            stroke="#64748b"
+                            fill="#f1f5f9"
+                          />
+                        )}
                         <Area
                           type="monotone"
-                          dataKey="besoinKwh"
-                          name="Besoin Foyer (kWh)"
-                          stroke="#64748b"
-                          fill="#f1f5f9"
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="surplusH2"
-                          name="Excédent Converti H₂ (kWh)"
-                          stroke="#8b5cf6"
-                          strokeWidth={2}
-                          dot={{ r: 2 }}
+                          dataKey="surplusReventeKwh"
+                          name="Électricité Vendue au Réseau (kWh)"
+                          stroke="#059669"
+                          fill="#d1fae5"
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -1743,6 +1873,7 @@ export default function ToolsSimulators() {
                             fontSize: "12px",
                             color: "#fff"
                           }}
+                          formatter={(value: any) => [`${value} kWh`, "Volume"]}
                         />
                       </PieChart>
                     </ResponsiveContainer>
@@ -1759,10 +1890,67 @@ export default function ToolsSimulators() {
                           <span className="text-slate-600 truncate">{item.name} :</span>
                         </div>
                         <span className="font-mono font-semibold text-slate-800 shrink-0">
-                          {item.value} kWh
+                          {item.value.toLocaleString("fr-FR")} kWh
                         </span>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Economic Balance on 20 Years (EDF OA Contract Duration) */}
+              <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 border border-emerald-200 rounded-2xl p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-3 border-b border-emerald-200/60 pb-2">
+                  <div className="flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-emerald-700" />
+                    <h3 className="text-xs sm:text-sm font-bold uppercase font-mono text-emerald-950">
+                      Bilan Financier Prévisionnel sur 20 Ans (Contrat EDF OA)
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">
+                    Tarif garanti 20 ans
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                  <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-emerald-100">
+                    <p className="text-[10px] font-mono text-slate-500 uppercase">Revenus Revente Réseau (20 ans)</p>
+                    <p className="text-lg font-black font-mono text-emerald-700 mt-0.5">
+                      {solarSimulation.cumulativeResale20Years.toLocaleString("fr-FR")} €
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      ~{solarSimulation.annualResaleIncome.toLocaleString("fr-FR")} € / an versés par l'acheteur
+                    </p>
+                  </div>
+
+                  <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-emerald-100">
+                    <p className="text-[10px] font-mono text-slate-500 uppercase">Facture Évitée (20 ans)</p>
+                    <p className="text-lg font-black font-mono text-sky-700 mt-0.5">
+                      {solarSimulation.cumulativeSavings20Years.toLocaleString("fr-FR")} €
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      Économies sur l'achat d'électricité réseau
+                    </p>
+                  </div>
+
+                  <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-emerald-100">
+                    <p className="text-[10px] font-mono text-slate-500 uppercase">Gain Net Cumulé (20 ans)</p>
+                    <p className="text-lg font-black font-mono text-slate-900 mt-0.5">
+                      {solarSimulation.cumulativeGain20Years.toLocaleString("fr-FR")} €
+                    </p>
+                    <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">
+                      Revente + Économies directes
+                    </p>
+                  </div>
+
+                  <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-emerald-100">
+                    <p className="text-[10px] font-mono text-slate-500 uppercase">Retour sur Investissement (ROI)</p>
+                    <p className="text-lg font-black font-mono text-amber-700 mt-0.5">
+                      ~{solarSimulation.paybackYears} ans
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      Coût matériel estimé : ~{solarSimulation.estimatedInstallCost.toLocaleString("fr-FR")} €
+                    </p>
                   </div>
                 </div>
               </div>

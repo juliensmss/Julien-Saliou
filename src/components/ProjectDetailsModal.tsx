@@ -2,6 +2,7 @@ import { Project } from "../types";
 import { motion, AnimatePresence } from "motion/react";
 import SmartImage from "./SmartImage";
 import { X, MapPin, Calendar, Award, CheckCircle, TrendingUp, Info } from "lucide-react";
+import { trackUnismeClick } from "../lib/analytics";
 
 interface ProjectDetailsModalProps {
   project: Project | null;
@@ -189,6 +190,7 @@ export default function ProjectDetailsModal({ project, onClose, isDarkMode = fal
                   href="https://unisme.juliensaliou.com/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackUnismeClick("modal_projet_" + project.id)}
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-xs transition"
                 >
                   <span>Découvrir la solution SMÉ ISO 50001 en direct ↗</span>

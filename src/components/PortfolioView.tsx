@@ -29,6 +29,7 @@ import { PROJECTS } from "../data";
 import ProjectDetailsModal from "./ProjectDetailsModal";
 import SmartImage, { SmartProfileImage, SmartCoverImage } from "./SmartImage";
 import { Project } from "../types";
+import { trackProjectView } from "../lib/analytics";
 
 interface PortfolioViewProps {
   onNavigateToContact?: () => void;
@@ -38,6 +39,12 @@ interface PortfolioViewProps {
 export default function PortfolioView({ onNavigateToContact, onNavigateToTools }: PortfolioViewProps) {
   const [projectFilter, setProjectFilter] = useState<"all" | "energy" | "lean" | "digital" | "ia" | string>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const handleOpenProject = (proj: Project) => {
+    setSelectedProject(proj);
+    trackProjectView(proj.id, proj.title, proj.client);
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
   const isDarkMode = false;
   const [activeToggles, setActiveToggles] = useState<Record<string, boolean>>({
@@ -149,13 +156,16 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
               Ravi de vous accueillir sur cet espace pour vous permettre de faire plus ample connaissance avec mon parcours et mes réalisations.
             </p>
             <p>
-              J'ai bâti ma carrière sur une compréhension concrète des réalités industrielles, au plus près des équipements et des métiers industriels.
+              J'ai bâti ma carrière sur une compréhension concrète des réalités industrielles, au plus près des équipements et des équipes de terrain.
             </p>
             <p>
-              Aujourd'hui, avec plus de 15 années d'expérience, j’ai développé une double expertise : une maîtrise robuste des enjeux métiers alliée à une vision stratégique de conseil. Passionné par les systèmes complexes, je cultive également une forte curiosité pour les sciences humaines et l'innovation digitale, cherchant toujours à lier la rigueur de l'ingénieur à la compréhension du facteur humain.
+              Le fil rouge de mon parcours entre l'ingénierie industrielle lourde, le conseil stratégique et la création numérique ? La réponse est simple : <strong className={`font-semibold ${themeTitle}`}>la maîtrise des systèmes complexes, de la donnée et des flux pour faciliter la prise de décision</strong>.
             </p>
             <p>
-              Porté par cette approche globale, mon ambition est de piloter la transformation des systèmes complexes en concevant des architectures d’excellence opérationnelle, capables d'aligner l'efficience industrielle, la sobriété des ressources et l'agilité organisationnelle face aux mutations environnementales.
+              Fort de plus de 15 années d'expérience, j'ai forgé une <strong className={`font-semibold ${themeTitle}`}>triple compétence</strong> : la maîtrise des enjeux métiers opérationnels, la vision stratégique du conseil, et la capacité à concevoir et développer des solutions web sur mesure. Passionné par les systèmes complexes, je cultive également une forte curiosité pour les sciences humaines et l'innovation digitale, cherchant toujours à lier la rigueur de l'ingénieur à la compréhension du facteur humain.
+            </p>
+            <p>
+              Porté par cette approche globale, mon ambition est d’accompagner la performance et la transformation des organisations en bâtissant des architectures d’excellence opérationnelle et des outils d'aide à la décision intuitifs, capables d'aligner efficience industrielle, sobriété des ressources et agilité face aux mutations environnementales.
             </p>
           </div>
         </div>
@@ -190,7 +200,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                 <span 
                   onClick={() => {
                     const proj = PROJECTS.find(p => p.id === "exxonmobil");
-                    if (proj) setSelectedProject(proj);
+                    if (proj) handleOpenProject(proj);
                   }}
                   className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                   title="Ouvrir le projet Optimisation ExxonMobil"
@@ -205,7 +215,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                 <span 
                   onClick={() => {
                     const proj = PROJECTS.find(p => p.id === "edf");
-                    if (proj) setSelectedProject(proj);
+                    if (proj) handleOpenProject(proj);
                   }}
                   className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                   title="Ouvrir le projet Maintenance EDF"
@@ -228,7 +238,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                 <span 
                   onClick={() => {
                     const proj = PROJECTS.find(p => p.id === "lgcf");
-                    if (proj) setSelectedProject(proj);
+                    if (proj) handleOpenProject(proj);
                   }}
                   className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                   title="Ouvrir le projet EMS LGCF"
@@ -271,7 +281,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   <span 
                     onClick={() => {
                       const proj = PROJECTS.find(p => p.id === "danone");
-                      if (proj) setSelectedProject(proj);
+                      if (proj) handleOpenProject(proj);
                     }}
                     className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                     title="Ouvrir le projet Danone OEE"
@@ -286,7 +296,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   <span 
                     onClick={() => {
                       const proj = PROJECTS.find(p => p.id === "totalenergies");
-                      if (proj) setSelectedProject(proj);
+                      if (proj) handleOpenProject(proj);
                     }}
                     className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                     title="Ouvrir le projet TotalEnergies ISO 50001"
@@ -301,7 +311,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   <span 
                     onClick={() => {
                       const proj = PROJECTS.find(p => p.id === "log-brewery");
-                      if (proj) setSelectedProject(proj);
+                      if (proj) handleOpenProject(proj);
                     }}
                     className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                     title="Ouvrir le projet Lean & Lean Six Sigma"
@@ -316,7 +326,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   <span 
                     onClick={() => {
                       const proj = PROJECTS.find(p => p.id === "strategy-bayer");
-                      if (proj) setSelectedProject(proj);
+                      if (proj) handleOpenProject(proj);
                     }}
                     className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                     title="Ouvrir le projet Bayer & Syensqo"
@@ -331,7 +341,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   <span 
                     onClick={() => {
                       const proj = PROJECTS.find(p => p.id === "mes-thales");
-                      if (proj) setSelectedProject(proj);
+                      if (proj) handleOpenProject(proj);
                     }}
                     className={`font-semibold ${themeTitle} hover:text-emerald-500 hover:underline cursor-pointer inline-flex items-center gap-1 text-xs sm:text-sm transition-colors duration-150`}
                     title="Ouvrir le projet Cadrage Thales"
@@ -443,7 +453,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
             {filteredProjects.map((p) => (
               <div
                 key={p.id}
-                onClick={() => setSelectedProject(p)}
+                onClick={() => handleOpenProject(p)}
                 className={`group rounded-lg border ${themeCardBorder} ${themeCardBg} overflow-hidden cursor-pointer ${themeCardHover} transition-all duration-200 flex flex-col h-full`}
                 id={`project-card-${p.id}`}
               >

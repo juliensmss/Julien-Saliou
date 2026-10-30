@@ -9,6 +9,7 @@ import {
   User,
   Building2
 } from "lucide-react";
+import { trackContactSubmit } from "../lib/analytics";
 
 export const PREDEFINED_OBJECTS = [
   "Performance Industrielle",
@@ -73,6 +74,7 @@ export default function ContactInvitations() {
     } finally {
       setIsSubmitting(false);
       setIsSent(true);
+      trackContactSubmit(finalObjet, objetType);
     }
   };
 
