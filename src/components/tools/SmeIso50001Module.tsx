@@ -56,7 +56,7 @@ export default function SmeIso50001Module() {
 
           <div className="pt-2">
             <a
-              href="https://ai.studio/apps/6b93ee19-58d9-422f-9bee-477b083a91de?fullscreenApplet=true"
+              href="https://unisme.juliensaliou.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all group"

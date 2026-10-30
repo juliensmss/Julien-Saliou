@@ -186,7 +186,7 @@ export default function ProjectDetailsModal({ project, onClose, isDarkMode = fal
             <div className={`bg-neutral-950 ${isDarkMode ? "bg-neutral-950" : "bg-neutral-100"} p-4 border-t ${mBorderMuted} flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${mTextSubtle}`}>
               {(project.id === "totalenergies" || project.id === "lgcf") ? (
                 <a
-                  href="https://ai.studio/apps/6b93ee19-58d9-422f-9bee-477b083a91de?fullscreenApplet=true"
+                  href="https://unisme.juliensaliou.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-xs transition"

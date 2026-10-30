@@ -359,7 +359,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="shrink-0 text-lg">🚀</span>
+                <span className="shrink-0 text-lg">✨</span>
                 <h3 className="text-base sm:text-lg font-bold text-black tracking-tight">
                   2026 à ce jour : Création de solution Web
                 </h3>
