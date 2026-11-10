@@ -48,14 +48,18 @@ export default function SmeIso50001Module() {
           </div>
 
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            Plateforme Digitale de Management Énergétique
+            UniSme • Plateforme Digitale de Management Énergétique
           </h3>
 
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-sm text-slate-800 leading-relaxed font-semibold">
+            De par cette expérience, est né UniSme pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations énergétiques.
+          </p>
+
+          <p className="text-xs text-slate-600 leading-relaxed">
             Accédez directement à la modélisation en direct de la solution SMÉ ISO 50001 (plan de comptage IoT, revue énergétique initiale, suivi des indicateurs IPÉ et cycle PDCA d'amélioration continue).
           </p>
 
-          <div className="pt-2">
+          <div className="pt-2 flex flex-wrap items-center gap-4">
             <a
               href="https://unisme.juliensaliou.com/"
               target="_blank"
@@ -63,7 +67,16 @@ export default function SmeIso50001Module() {
               onClick={() => trackUnismeClick("module_sme_solutions")}
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all group"
             >
-              <span>Découvrir la solution SMÉ ISO 50001 en direct ↗</span>
+              <span>Découvrir la solution UniSme en direct ↗</span>
+            </a>
+            <a
+              href="https://unisme.juliensaliou.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackUnismeClick("module_sme_solutions_link")}
+              className="text-xs font-mono text-emerald-700 hover:underline"
+            >
+              https://unisme.juliensaliou.com/
             </a>
           </div>
         </div>

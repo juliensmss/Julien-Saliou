@@ -96,8 +96,12 @@ export default function ContactInvitations() {
         
         {/* Header Section */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 text-emerald-800 text-xs font-mono font-semibold">
-            <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-semibold transition-colors ${
+            objetType === "Professionnel"
+              ? "bg-sky-50 border border-sky-200 text-sky-800"
+              : "bg-emerald-50 border border-emerald-200 text-emerald-800"
+          }`}>
+            <MessageSquare className={`w-3.5 h-3.5 ${objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}`} />
             <span>Contact & Échanges</span>
           </div>
 
@@ -140,7 +144,7 @@ export default function ContactInvitations() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="contact-nom" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 font-mono">
-                    Nom <span className="text-emerald-600">*</span>
+                    Nom <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                   </label>
                   <input
                     id="contact-nom"
@@ -149,13 +153,15 @@ export default function ContactInvitations() {
                     value={nom}
                     onChange={(e) => setNom(e.target.value)}
                     placeholder="Votre nom"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                    className={`w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                      objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                    } focus:bg-white transition`}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="contact-prenom" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 font-mono">
-                    Prénom <span className="text-emerald-600">*</span>
+                    Prénom <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                   </label>
                   <input
                     id="contact-prenom"
@@ -164,7 +170,9 @@ export default function ContactInvitations() {
                     value={prenom}
                     onChange={(e) => setPrenom(e.target.value)}
                     placeholder="Votre prénom"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                    className={`w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                      objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                    } focus:bg-white transition`}
                   />
                 </div>
               </div>
@@ -173,7 +181,7 @@ export default function ContactInvitations() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="contact-email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 font-mono">
-                    Adresse e-mail <span className="text-emerald-600">*</span>
+                    Adresse e-mail <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                   </label>
                   <input
                     id="contact-email"
@@ -182,7 +190,9 @@ export default function ContactInvitations() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="votre.email@domaine.com"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                    className={`w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                      objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                    } focus:bg-white transition`}
                   />
                 </div>
 
@@ -199,7 +209,9 @@ export default function ContactInvitations() {
                     value={entreprise}
                     onChange={(e) => setEntreprise(e.target.value)}
                     placeholder="Structure ou société"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                    className={`w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                      objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                    } focus:bg-white transition`}
                   />
                 </div>
               </div>
@@ -207,7 +219,7 @@ export default function ContactInvitations() {
               {/* Vous êtes : Professionnel / Particulier */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 font-mono">
-                  Vous êtes <span className="text-emerald-600">*</span>
+                  Vous êtes <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
@@ -215,11 +227,11 @@ export default function ContactInvitations() {
                     onClick={() => setObjetType("Professionnel")}
                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                       objetType === "Professionnel"
-                        ? "bg-slate-900 border-slate-900 text-white shadow-sm"
-                        : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                        ? "bg-sky-600 border-sky-600 text-white shadow-sm"
+                        : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-sky-50 hover:border-sky-300 hover:text-sky-900"
                     }`}
                   >
-                    <Building2 className={`w-4 h-4 ${objetType === "Professionnel" ? "text-emerald-400" : "text-slate-400"}`} />
+                    <Building2 className={`w-4 h-4 ${objetType === "Professionnel" ? "text-white" : "text-sky-600"}`} />
                     <span>Professionnel</span>
                   </button>
 
@@ -228,11 +240,11 @@ export default function ContactInvitations() {
                     onClick={() => setObjetType("Particulier")}
                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                       objetType === "Particulier"
-                        ? "bg-slate-900 border-slate-900 text-white shadow-sm"
-                        : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                        ? "bg-emerald-600 border-emerald-600 text-white shadow-sm"
+                        : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-900"
                     }`}
                   >
-                    <User className={`w-4 h-4 ${objetType === "Particulier" ? "text-emerald-400" : "text-slate-400"}`} />
+                    <User className={`w-4 h-4 ${objetType === "Particulier" ? "text-white" : "text-emerald-600"}`} />
                     <span>Particulier</span>
                   </button>
                 </div>
@@ -241,26 +253,43 @@ export default function ContactInvitations() {
               {/* Objet : Champs prédéfinis */}
               <div>
                 <label htmlFor="contact-objet" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 font-mono">
-                  Objet <span className="text-emerald-600">*</span>
+                  Objet <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {PREDEFINED_OBJECTS.map((opt) => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => setObjetChoice(opt)}
-                      className={`px-3 py-2.5 rounded-xl border text-xs font-medium text-left transition cursor-pointer flex items-center justify-between ${
-                        objetChoice === opt
-                          ? "bg-slate-900 border-slate-900 text-white shadow-sm font-semibold"
-                          : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
-                      }`}
-                    >
-                      <span className="truncate">{opt}</span>
-                      {objetChoice === opt && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 ml-1.5" />
-                      )}
-                    </button>
-                  ))}
+                  {PREDEFINED_OBJECTS.map((opt) => {
+                    const isBlueTopic =
+                      opt === "Performance Industrielle" ||
+                      opt === "Transformation Digitale" ||
+                      opt === "Création de solution web saas" ||
+                      (opt === "Autres" && objetType === "Professionnel");
+                    const isSelected = objetChoice === opt;
+
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setObjetChoice(opt)}
+                        className={`px-3 py-2.5 rounded-xl border text-xs font-medium text-left transition cursor-pointer flex items-center justify-between ${
+                          isSelected
+                            ? isBlueTopic
+                              ? "bg-sky-600 border-sky-600 text-white shadow-sm font-semibold"
+                              : "bg-emerald-600 border-emerald-600 text-white shadow-sm font-semibold"
+                            : isBlueTopic
+                            ? "bg-slate-50 border-slate-200 text-slate-700 hover:bg-sky-50 hover:border-sky-300 hover:text-sky-900"
+                            : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-900"
+                        }`}
+                      >
+                        <span className="truncate">{opt}</span>
+                        {isSelected && (
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full shrink-0 ml-1.5 ${
+                              isBlueTopic ? "bg-sky-200" : "bg-emerald-200"
+                            }`}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Champ texte complémentaire si 'Autres' est sélectionné */}
@@ -271,7 +300,9 @@ export default function ContactInvitations() {
                       value={autrePrecision}
                       onChange={(e) => setAutrePrecision(e.target.value)}
                       placeholder="Précisez votre demande ou sujet particulier..."
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                      className={`w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                        objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                      } focus:bg-white transition`}
                     />
                   </div>
                 )}
@@ -280,7 +311,7 @@ export default function ContactInvitations() {
               {/* Votre message (champ libre) */}
               <div>
                 <label htmlFor="contact-message" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 font-mono">
-                  Votre message (champ libre) <span className="text-emerald-600">*</span>
+                  Votre message (champ libre) <span className={objetType === "Professionnel" ? "text-sky-600" : "text-emerald-600"}>*</span>
                 </label>
                 <textarea
                   id="contact-message"
@@ -289,7 +320,9 @@ export default function ContactInvitations() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Bonjour Julien, je souhaite échanger avec vous concernant..."
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition leading-relaxed"
+                  className={`w-full bg-slate-50 border border-slate-300 rounded-xl p-3.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 ${
+                    objetType === "Professionnel" ? "focus:ring-sky-500 focus:border-sky-500" : "focus:ring-emerald-500 focus:border-emerald-500"
+                  } focus:bg-white transition leading-relaxed`}
                 />
               </div>
 
@@ -298,7 +331,11 @@ export default function ContactInvitations() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs tracking-wide uppercase transition shadow-md hover:shadow-lg cursor-pointer"
+                  className={`w-full flex items-center justify-center gap-2 py-3 px-6 ${
+                    objetType === "Professionnel"
+                      ? "bg-sky-600 hover:bg-sky-500"
+                      : "bg-emerald-600 hover:bg-emerald-500"
+                  } disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs tracking-wide uppercase transition shadow-md hover:shadow-lg cursor-pointer`}
                 >
                   <Send className="w-4 h-4" />
                   <span>{isSubmitting ? "Envoi en cours..." : "Envoyer"}</span>

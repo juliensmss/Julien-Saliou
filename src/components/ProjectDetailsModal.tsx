@@ -183,36 +183,39 @@ export default function ProjectDetailsModal({ project, onClose, isDarkMode = fal
               </div>
             </div>
 
-            {/* Footer Contact Reminder & Live Solution Action */}
-            <div className={`bg-neutral-950 ${isDarkMode ? "bg-neutral-950" : "bg-neutral-100"} p-4 border-t ${mBorderMuted} flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${mTextSubtle}`}>
-              {(project.id === "totalenergies" || project.id === "lgcf") ? (
+            {/* Un seul bandeau couleur gris foncé épuré */}
+            {(project.id === "totalenergies" || project.id === "lgcf") && (
+              <div className="bg-neutral-900 border-t border-neutral-800 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed font-normal">
+                  De par cette expérience, est né <strong className="text-emerald-400 font-semibold">UniSme</strong> pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations énergétiques.
+                </p>
                 <a
                   href="https://unisme.juliensaliou.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackUnismeClick("modal_projet_" + project.id)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-xs transition"
+                  onClick={() => trackUnismeClick("modal_footer_" + project.id)}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-sm cursor-pointer"
                 >
-                  <span>Découvrir la solution SMÉ ISO 50001 en direct ↗</span>
+                  <span>Accéder à UniSme ↗</span>
                 </a>
-              ) : project.id === "junivers" ? (
+              </div>
+            )}
+
+            {project.id === "junivers" && (
+              <div className="bg-neutral-900 border-t border-neutral-800 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                <p className="text-neutral-200 text-xs sm:text-sm">
+                  Projet d'application web explorant l'IA générative et les modèles psychologiques.
+                </p>
                 <a
                   href="https://junivers.fr/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs shadow-xs transition"
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition cursor-pointer"
                 >
-                  <span>Visiter la plateforme Junivers ↗</span>
-                </a>
-              ) : (
-                <div />
-              )}
-              <div className="flex gap-4">
-                <a href="https://www.linkedin.com/in/juliencr6/" target="_blank" rel="noopener noreferrer" className={`${isDarkMode ? "text-neutral-300" : "text-neutral-700"} font-semibold hover:underline`}>
-                  LinkedIn Profile
+                  <span>Visiter Junivers ↗</span>
                 </a>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       )}

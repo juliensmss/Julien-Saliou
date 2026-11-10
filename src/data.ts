@@ -76,7 +76,7 @@ export const PROJECTS: Project[] = [
     category: "energy",
     image: "/LGCF.jpg",
     summary: "Déploiement d'une architecture IoT de supervision énergétique multi-site et accompagnement vers la certification ISO 50001.",
-    presentation: "Dans un contexte de forte volonté de réduction de l'empreinte carbone, j'ai piloté le déploiement d'une architecture numérique permettant de monitorer et d'optimiser la consommation énergétique du groupe Les Grands Chais De France. L'enjeu était de transformer des données brutes provenant de sites hétérogènes en indicateurs de performance exploitables pour la certification ISO 50001.",
+    presentation: "Dans un contexte de forte volonté de réduction de l'empreinte carbone, j'ai piloté le déploiement d'une architecture numérique permettant de monitorer et d'optimiser la consommation énergétique du groupe Les Grands Chais De France. L'enjeu était de transformer des données brutes provenant de sites hétérogènes en indicateurs de performance exploitables pour la certification ISO 50001. De par cette expérience, est né UniSme pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations énergétiques.",
     methodology: [
       "Audit Connectivité : État des lieux technique des 14 sites pour identifier les points de comptage critiques (Électricité, Gaz, Eau, Vapeur).",
       "Déploiement Architecture IoT : Mise en œuvre d'un réseau de capteurs communicants via le protocole LoRaWAN, permettant une collecte de données sans fil à longue portée.",
@@ -128,7 +128,7 @@ export const PROJECTS: Project[] = [
     category: "energy",
     image: "/totalEnergies.jpg",
     summary: "Pilotage et déploiement de l'offre d'assistance certifiable ISO 50001 pour la branche Exploration-Production.",
-    presentation: "Au sein de GreenFlex, j'ai développé et piloté l'offre stratégique dédiée à l'ISO 50001 pour le compte du groupe TotalEnergies. Mon rôle consistait à coordonner une équipe de 30 ingénieurs et à accompagner les entités internationales de la branche Exploration-Production dans la mise en œuvre de systèmes de management de l'énergie performants et certifiables.",
+    presentation: "Au sein de GreenFlex, j'ai développé et piloté l'offre stratégique dédiée à l'ISO 50001 pour le compte du groupe TotalEnergies. Mon rôle consistait à coordonner une équipe de 30 ingénieurs et à accompagner les entités internationales de la branche Exploration-Production dans la mise en œuvre de systèmes de management de l'énergie performants et certifiables. De par cette expérience, est né UniSme pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations énergétiques.",
     methodology: [
       "Développement de l'Offre : Structuration de la proposition commerciale, veille concurrentielle et animation technique de la communauté d'ingénieurs experts.",
       "Diagnostics de Maturité : Évaluation du niveau de performance énergétique des sites et identification des écarts par rapport à la norme internationale.",

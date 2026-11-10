@@ -29,7 +29,7 @@ import { PROJECTS } from "../data";
 import ProjectDetailsModal from "./ProjectDetailsModal";
 import SmartImage, { SmartProfileImage, SmartCoverImage } from "./SmartImage";
 import { Project } from "../types";
-import { trackProjectView } from "../lib/analytics";
+import { trackProjectView, trackUnismeClick } from "../lib/analytics";
 
 interface PortfolioViewProps {
   onNavigateToContact?: () => void;
@@ -246,7 +246,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   • Les Grands Chais de France (LGCF/Agroalimentaire) | 2019 — 2021 ↗
                 </span>
                 <span className={`${themeTextMuted} text-xs sm:text-[13px] leading-relaxed block pl-3`}>
-                  Chef de projet Énergie Multisite. Certification ISO 50001 (14 sites) et déploiement de la supervision IoT. En parallèle d'une <strong className={`${isDarkMode ? "text-neutral-200" : "text-neutral-800"} font-semibold`}>reprise d'études avec le CESI de Bordeaux (Ingénieur Généraliste)</strong>.
+                  Chef de projet Énergie Multisite. Certification ISO 50001 (14 sites) et déploiement de la supervision IoT. En parallèle d'une <strong className={`${isDarkMode ? "text-neutral-200" : "text-neutral-800"} font-semibold`}>reprise d'études avec le CESI de Bordeaux (Ingénieur Généraliste)</strong>. De par cette expérience, est né <a href="https://unisme.juliensaliou.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => { e.stopPropagation(); trackUnismeClick("career_lgcf"); }} className="text-emerald-600 hover:underline font-semibold inline-flex items-center gap-0.5">UniSme ↗</a> pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations.
                 </span>
               </li>
             </ul>
@@ -304,7 +304,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                     🔹 TotalEnergies (ISO 50001) | 2022 - 2023 (1 an) ↗
                   </span>
                   <span className={`${themeTextMuted} text-xs sm:text-[13px] block pl-3`}>
-                    Déploiement international de l'offre d'accompagnement certifiable ISO 50001 (6 filiales).
+                    Déploiement international de l'offre d'accompagnement certifiable ISO 50001 (6 filiales). De par cette expérience, est né <a href="https://unisme.juliensaliou.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => { e.stopPropagation(); trackUnismeClick("career_totalenergies"); }} className="text-emerald-600 hover:underline font-semibold inline-flex items-center gap-0.5">UniSme ↗</a> pour la maîtrise du SMÉ et des consommations énergétiques.
                   </span>
                 </li>
                 <li className="space-y-1">
@@ -378,7 +378,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-neutral-900 leading-relaxed font-normal">
-                Développement de solutions web applicatives, outils d'aide à la décision industrielle, simulateurs d'autonomie et plateformes interactives.
+                Développement de solutions web applicatives, outils d'aide à la décision industrielle, simulateurs d'autonomie et plateformes interactives (dont <a href="https://unisme.juliensaliou.com/" target="_blank" rel="noopener noreferrer" onClick={() => trackUnismeClick("banner_unisme")} className="font-semibold text-emerald-600 hover:underline inline-flex items-center gap-0.5">UniSme ↗</a> pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations d'énergie).
               </p>
             </div>
 
