@@ -246,7 +246,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
                   • Les Grands Chais de France (LGCF/Agroalimentaire) | 2019 — 2021 ↗
                 </span>
                 <span className={`${themeTextMuted} text-xs sm:text-[13px] leading-relaxed block pl-3`}>
-                  Chef de projet Énergie Multisite. Certification ISO 50001 (14 sites) et déploiement de la supervision IoT. En parallèle d'une <strong className={`${isDarkMode ? "text-neutral-200" : "text-neutral-800"} font-semibold`}>reprise d'études avec le CESI de Bordeaux (Ingénieur Généraliste)</strong>. De par cette expérience, est né <a href="https://unisme.juliensaliou.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => { e.stopPropagation(); trackUnismeClick("career_lgcf"); }} className="text-emerald-600 hover:underline font-semibold inline-flex items-center gap-0.5">UniSme ↗</a> pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations.
+                  Chef de projet Énergie Multisite. Certification ISO 50001 (14 sites) et déploiement de la supervision IoT. En parallèle d'une <strong className={`${isDarkMode ? "text-neutral-200" : "text-neutral-800"} font-semibold`}>reprise d'études avec le CESI de Bordeaux (Ingénieur Généraliste)</strong>.
                 </span>
               </li>
             </ul>
@@ -363,12 +363,12 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
 
         {/* 6b. Full-width block: 2025 à ce jour : Création de solution Web */}
         <div 
-          className="mt-8 sm:mt-10 py-2" 
+          className="mt-8 sm:mt-10 py-2 text-center" 
           id="web-solutions-block"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="space-y-1.5 flex flex-col items-center">
+              <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="shrink-0 text-lg">✨</span>
                 <h3 className={`text-base sm:text-lg font-bold ${themeTitle} tracking-tight`}>
                   2025 à ce jour : Création de solution Web
@@ -398,7 +398,7 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
         {/* 7. Gallery Database View Section */}
         <div className={`mt-14 space-y-4 border-t ${themeBorder} pt-10`} id="projects-gallery-section">
           <h2 className={`text-xl sm:text-[22px] font-bold ${themeTitle} tracking-tight flex items-center gap-2`}>
-            Mes projets phares
+            Mes projets Industrie & Conseil
           </h2>
 
           {/* Database Control Row */}
