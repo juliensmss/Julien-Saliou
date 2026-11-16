@@ -361,24 +361,24 @@ export default function PortfolioView({ onNavigateToContact, onNavigateToTools }
           </div>
         </div>
 
-        {/* 6b. Full-width block: 2026 à ce jour : Création de solution Web */}
+        {/* 6b. Full-width block: 2025 à ce jour : Création de solution Web */}
         <div 
-          className={`mt-10 p-5 sm:p-6 rounded-xl border ${themeBorder} bg-gradient-to-r from-neutral-50 via-white to-blue-50/20 hover:border-blue-300 transition-all duration-200 shadow-sm`} 
+          className="mt-8 sm:mt-10 py-2" 
           id="web-solutions-block"
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="shrink-0 text-lg">✨</span>
-                <h3 className="text-base sm:text-lg font-bold text-black tracking-tight">
-                  2026 à ce jour : Création de solution Web
+                <h3 className={`text-base sm:text-lg font-bold ${themeTitle} tracking-tight`}>
+                  2025 à ce jour : Création de solution Web
                 </h3>
                 <span className="text-[9px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider inline-block">
                   Solutions Web & SaaS
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-neutral-900 leading-relaxed font-normal">
-                Développement de solutions web applicatives, outils d'aide à la décision industrielle, simulateurs d'autonomie et plateformes interactives (dont <a href="https://unisme.juliensaliou.com/" target="_blank" rel="noopener noreferrer" onClick={() => trackUnismeClick("banner_unisme")} className="font-semibold text-emerald-600 hover:underline inline-flex items-center gap-0.5">UniSme ↗</a> pour permettre aux professionnels de maîtriser leur SMÉ et leurs consommations d'énergie).
+              <p className={`text-xs sm:text-sm ${themeText} leading-relaxed font-normal`}>
+                Développement de solutions web applicatives, outils d'aide à la décision.
               </p>
             </div>
 
